@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Sign In — Smart-Alloc{% endblock %}
+
+{% block extra_head %}
+<style>
+    .auth-wrapper {
+        min-height: calc(100vh - 160px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #f4f6f9 0%, #e8ecf1 100%);
+    }
+    .auth-card {
+        width: 100%;
+        max-width: 450px;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    .auth-card-header {
+        background: linear-gradient(135deg, var(--sa-navy) 0%, #16213e 100%);
+        color: #fff;
+        padding: 2rem 2rem 1.5rem;
+        text-align: center;
+    }
+    .auth-card-header h3 {
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    .auth-card-header p {
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+    .auth-card-body {
+        padding: 2rem;
+    }
+    .form-control:focus {
+        border-color: var(--sa-teal);
+        box-shadow: 0 0 0 0.2rem rgba(22,160,133,0.15);
+    }
+    .input-icon-group {
+        position: relative;
+    }
+    .input-icon-group .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+        font-size: 1rem;
+    }
+    .input-icon-group .form-control {
+        padding-left: 42px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card auth-card">
+        <div class="auth-card-header">
+            <div class="mb-3">
+                <i class="bi bi-box-arrow-in-right" style="font-size: 2.5rem; color: var(--sa-teal);"></i>
+            </div>
+            <h3>Sign In</h3>
+            <p>Welcome back! Please enter your credentials.</p>
+        </div>
+        <div class="auth-card-body">
+            {% if error %}
+            <div class="alert alert-danger d-flex align-items-center py-2 px-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="post" action="/login" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold text-muted small">Email Address</label>
+                    <div class="input-icon-group">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email" class="form-control form-control-lg" id="email" name="email"
+                               placeholder="you@example.com" required autofocus>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold text-muted small">Password</label>
+                    <div class="input-icon-group">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" class="form-control form-control-lg" id="password" name="password"
+                               placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-teal btn-lg w-100 fw-semibold mb-3">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+            </form>
+
+            <div class="text-center">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="/register" class="fw-semibold text-decoration-none" style="color: var(--sa-teal);">Create one</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

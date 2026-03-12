@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}HR Dashboard — Smart-Alloc{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h2 class="mb-0" style="color: var(--sa-navy);">
+            <i class="bi bi-clipboard-check me-2" style="color: var(--sa-teal);"></i>HR Dashboard
+        </h2>
+        <div class="d-flex align-items-center gap-3">
+            <div class="card border-0 shadow-sm px-3 py-2">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-person-badge-fill" style="color: var(--sa-teal); font-size: 1.3rem;"></i>
+                    <div>
+                        <small class="text-muted d-block lh-1">Employees</small>
+                        <span class="fw-bold">{{ employees|length }}</span>
+                    </div>
+                </div>
+            </div>
+            <a href="/hr/employees" class="btn btn-teal">
+                <i class="bi bi-people me-1"></i>Manage Employees
+            </a>
+        </div>
+    </div>
+
+    <!-- Pending Review Section -->
+    <div class="mb-5">
+        <h4 class="mb-3" style="color: var(--sa-navy);">
+            <i class="bi bi-hourglass-split me-2 text-warning"></i>Pending Review
+        </h4>
+        <div class="row g-3">
+            {% for project in pending_projects %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <h5 class="card-title mb-0" style="color: var(--sa-navy);">{{ project.title }}</h5>
+                            {% if project.priority and project.priority.value == 'critical' %}
+                            <span class="badge bg-danger ms-2">Critical</span>
+                            {% elif project.priority and project.priority.value == 'high' %}
+                            <span class="badge bg-warning text-dark ms-2">High</span>
+                            {% elif project.priority and project.priority.value == 'medium' %}
+                            <span class="badge bg-info text-dark ms-2">Medium</span>
+                            {% elif project.priority %}
+                            <span class="badge bg-secondary ms-2">Low</span>
+                            {% endif %}
+                        </div>
+                        <p class="card-text text-muted small flex-grow-1">{{ project.description[:100] }}{% if
+                            project.description|length > 100 %}…{% endif %}</p>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">
+                                <i class="bi bi-person me-1"></i>Client: <strong>{{ project.client.full_name }}</strong>
+                            </small>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-calendar-event me-1"></i>Deadline: <strong>{{
+                                    project.deadline.strftime('%b %d, %Y') if project.deadline else 'Not set'
+                                    }}</strong>
+                            </small>
+                        </div>
+                        <a href="/hr/project/{{ project.id }}" class="btn btn-teal btn-sm">
+                            <i class="bi bi-eye me-1"></i>Review
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center text-muted py-5">
+                        <i class="bi bi-check-circle fs-1 d-block mb-2" style="color: var(--sa-teal);"></i>
+                        No projects pending review.
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- AI Reviewed Section -->
+    <div class="mb-4">
+        <h4 class="mb-3" style="color: var(--sa-navy);">
+            <i class="bi bi-robot me-2" style="color: var(--sa-teal);"></i>AI Reviewed
+        </h4>
+        <div class="row g-3">
+            {% for project in reviewed_projects %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <h5 class="card-title mb-0" style="color: var(--sa-navy);">{{ project.title }}</h5>
+                            <div class="d-flex gap-1 ms-2">
+                                {% if project.priority and project.priority.value == 'critical' %}
+                                <span class="badge bg-danger">Critical</span>
+                                {% elif project.priority and project.priority.value == 'high' %}
+                                <span class="badge bg-warning text-dark">High</span>
+                                {% elif project.priority and project.priority.value == 'medium' %}
+                                <span class="badge bg-info text-dark">Medium</span>
+                                {% elif project.priority %}
+                                <span class="badge bg-secondary">Low</span>
+                                {% endif %}
+                                {% if project.ai_confidence is not none %}
+                                <span class="badge bg-dark" title="AI Confidence">
+                                    <i class="bi bi-stars me-1"></i>{{ (project.ai_confidence * 100)|round|int }}%
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <p class="card-text text-muted small flex-grow-1">{{ project.description[:100] }}{% if
+                            project.description|length > 100 %}…{% endif %}</p>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">
+                                <i class="bi bi-person me-1"></i>Client: <strong>{{ project.client.full_name }}</strong>
+                            </small>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-calendar-event me-1"></i>Deadline: <strong>{{
+                                    project.deadline.strftime('%b %d, %Y') if project.deadline else 'Not set'
+                                    }}</strong>
+                            </small>
+                        </div>
+                        <a href="/hr/project/{{ project.id }}" class="btn btn-outline-teal btn-sm">
+                            <i class="bi bi-search me-1"></i>View Review
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center text-muted py-5">
+                        <i class="bi bi-robot fs-1 d-block mb-2"></i>
+                        No AI-reviewed projects yet.
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

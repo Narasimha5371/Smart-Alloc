@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Submit New Project - Smart-Alloc{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back link -->
+    <a href="/client/dashboard" class="text-decoration-none mb-3 d-inline-block" style="color: var(--sa-teal);">
+        <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="mb-4" style="color: var(--sa-navy);">
+                        <i class="bi bi-plus-circle me-2" style="color: var(--sa-teal);"></i>Submit New Project
+                    </h3>
+
+                    <form action="/client/submit" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-semibold">Project Title <span class="text-danger">*</span></label>
+                            <input type="text" name="title" id="title" class="form-control" required
+                                   placeholder="Enter project title">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+                            <textarea name="description" id="description" class="form-control" rows="5" required
+                                      placeholder="Describe your project requirements, goals, and expectations..."></textarea>
+                        </div>
+
+                        <!-- Priority & Deadline -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="priority" class="form-label fw-semibold">Priority</label>
+                                <select name="priority" id="priority" class="form-select">
+                                    {% for p in priorities %}
+                                    <option value="{{ p.value }}">{{ p.value|capitalize }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="deadline" class="form-label fw-semibold">Deadline</label>
+                                <input type="date" name="deadline" id="deadline" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Budget -->
+                        <div class="mb-4">
+                            <label for="budget" class="form-label fw-semibold">Budget</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" name="budget" id="budget" class="form-control" min="0" step="0.01"
+                                       placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <!-- Required Skills -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Required Skills</label>
+                            <p class="text-muted small mb-2">Select the skills needed for this project.</p>
+                            {% if skills %}
+                            <div class="row g-2">
+                                {% for s in skills %}
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="skill_ids"
+                                               value="{{ s.id }}" id="skill-{{ s.id }}">
+                                        <label class="form-check-label" for="skill-{{ s.id }}">
+                                            {{ s.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted small">No skills available in the system yet.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-teal btn-lg">
+                                <i class="bi bi-send me-1"></i>Submit Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

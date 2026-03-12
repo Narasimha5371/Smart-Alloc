@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}Smart-Alloc — AI-Powered Project Management{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--sa-navy) 0%, #16213e 50%, #0f3460 100%);
+        color: #fff;
+        padding: 6rem 0 5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(22, 160, 133, 0.12) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(22, 160, 133, 0.08) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .hero-heading {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.72);
+        max-width: 600px;
+        line-height: 1.7;
+    }
+
+    .hero-heading .text-teal {
+        color: var(--sa-teal);
+    }
+
+    .feature-card {
+        border: none;
+        border-radius: 16px;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        background: #fff;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        color: #fff;
+        margin-bottom: 1.25rem;
+    }
+
+    .feature-icon.bg-teal {
+        background: linear-gradient(135deg, #16a085, #1abc9c);
+    }
+
+    .feature-icon.bg-blue {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+    }
+
+    .feature-icon.bg-purple {
+        background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    }
+
+    .features-section {
+        padding: 5rem 0;
+        background: #f4f6f9;
+    }
+
+    @media (max-width: 768px) {
+        .hero-heading {
+            font-size: 2rem;
+        }
+
+        .hero-section {
+            padding: 4rem 0 3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container position-relative" style="z-index:1;">
+        <div class="row align-items-center">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <h1 class="hero-heading mb-4">
+                    Smart Project Allocation,<br>
+                    <span class="text-teal">Powered by AI</span>
+                </h1>
+                <p class="hero-subtitle mb-4">
+                    Streamline project management with AI-driven employee matching and intelligent project evaluation.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="/register" class="btn btn-teal btn-lg px-4 shadow-sm">
+                        <i class="bi bi-rocket-takeoff me-2"></i>Get Started
+                    </a>
+                    <a href="/login" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+                <div style="font-size:10rem; color:rgba(22,160,133,0.2); line-height:1;">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: var(--sa-navy);">Why Choose Smart-Alloc?</h2>
+            <p class="text-muted mx-auto" style="max-width:550px;">
+                Leverage artificial intelligence to make smarter decisions about project management and resource
+                allocation.
+            </p>
+        </div>
+        <div class="row g-3 g-lg-4">
+            <!-- Feature 1 -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm p-4">
+                    <div class="card-body">
+                        <div class="feature-icon bg-teal">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3" style="color: var(--sa-navy);">AI Project Evaluation</h5>
+                        <p class="text-muted mb-0">
+                            Automatically evaluate project complexity, estimate timelines, and identify required skills
+                            using advanced AI analysis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Feature 2 -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm p-4">
+                    <div class="card-body">
+                        <div class="feature-icon bg-blue">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3" style="color: var(--sa-navy);">Smart Employee Matching</h5>
+                        <p class="text-muted mb-0">
+                            Intelligently match employees to projects based on skills, availability, and experience for
+                            optimal team composition.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Feature 3 -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm p-4">
+                    <div class="card-body">
+                        <div class="feature-icon bg-purple">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3" style="color: var(--sa-navy);">Real-time Progress Tracking</h5>
+                        <p class="text-muted mb-0">
+                            Monitor project milestones, track team performance, and get instant insights with live
+                            dashboards and reporting.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

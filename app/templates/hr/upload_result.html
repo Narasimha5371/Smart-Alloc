@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Import Results — Smart-Alloc{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="mb-0" style="color: var(--sa-navy);">
+            <i class="bi bi-file-earmark-check me-2" style="color: var(--sa-teal);"></i>Import Results
+        </h2>
+    </div>
+
+    <!-- Result Message -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="alert {% if result.errors %}alert-warning{% else %}alert-success{% endif %} d-flex align-items-center mb-0">
+                {% if result.errors %}
+                    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                {% else %}
+                    <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+                {% endif %}
+                <span class="fs-5">{{ result.message }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-person-plus-fill fs-2 text-success"></i>
+                    <div class="fw-bold fs-2 mt-2">{{ result.created }}</div>
+                    <span class="text-muted">Created</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-skip-forward-fill fs-2 text-warning"></i>
+                    <div class="fw-bold fs-2 mt-2">{{ result.skipped }}</div>
+                    <span class="text-muted">Skipped</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Errors List -->
+    {% if result.errors %}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0 text-danger">
+                <i class="bi bi-exclamation-circle me-2"></i>Errors ({{ result.errors|length }})
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+                {% for error in result.errors %}
+                <li class="list-group-item d-flex align-items-start">
+                    <i class="bi bi-x-circle text-danger me-2 mt-1"></i>
+                    <span>{{ error }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Link -->
+    <a href="/hr/employees" class="btn btn-teal">
+        <i class="bi bi-arrow-left me-1"></i>Back to Employees
+    </a>
+</div>
+{% endblock %}

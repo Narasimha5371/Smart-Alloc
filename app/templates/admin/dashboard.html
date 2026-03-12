@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — Smart-Alloc{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="mb-0" style="color: var(--sa-navy);">
+            <i class="bi bi-shield-lock me-2" style="color: var(--sa-teal);"></i>Admin Dashboard
+        </h2>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-2 col-md-4 col-6">
+            <a href="/admin/users" class="card stat-card border-0 shadow-sm h-100 text-decoration-none"
+                style="color: inherit;">
+                <div class="card-body text-center py-3">
+                    <i class="bi bi-people-fill fs-3 text-primary"></i>
+                    <div class="fw-bold fs-4 mt-1">{{ stats.total_users }}</div>
+                    <small class="text-muted">Total Users</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-2 col-md-4 col-6">
+            <a href="/admin/users?role=employee" class="card stat-card border-0 shadow-sm h-100 text-decoration-none"
+                style="color: inherit;">
+                <div class="card-body text-center py-3">
+                    <i class="bi bi-person-badge-fill fs-3 text-success"></i>
+                    <div class="fw-bold fs-4 mt-1">{{ stats.total_employees }}</div>
+                    <small class="text-muted">Employees</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-2 col-md-4 col-6">
+            <a href="/admin/projects" class="card stat-card border-0 shadow-sm h-100 text-decoration-none"
+                style="color: inherit;">
+                <div class="card-body text-center py-3">
+                    <i class="bi bi-folder-fill fs-3 text-info"></i>
+                    <div class="fw-bold fs-4 mt-1">{{ stats.total_projects }}</div>
+                    <small class="text-muted">Total Projects</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-2 col-md-4 col-6">
+            <a href="/admin/projects?status=pending"
+                class="card stat-card border-0 shadow-sm h-100 text-decoration-none" style="color: inherit;">
+                <div class="card-body text-center py-3">
+                    <i class="bi bi-hourglass-split fs-3 text-warning"></i>
+                    <div class="fw-bold fs-4 mt-1">{{ stats.pending_projects }}</div>
+                    <small class="text-muted">Pending Projects</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-2 col-md-4 col-6">
+            <a href="/admin/projects?status=in_progress"
+                class="card stat-card border-0 shadow-sm h-100 text-decoration-none" style="color: inherit;">
+                <div class="card-body text-center py-3">
+                    <i class="bi bi-lightning-charge-fill fs-3" style="color: var(--sa-teal);"></i>
+                    <div class="fw-bold fs-4 mt-1">{{ stats.active_projects }}</div>
+                    <small class="text-muted">Active Projects</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-2 col-md-4 col-6">
+            <a href="/admin/projects?status=in_progress"
+                class="card stat-card border-0 shadow-sm h-100 text-decoration-none" style="color: inherit;">
+                <div class="card-body text-center py-3">
+                    <i class="bi bi-diagram-3-fill fs-3 text-danger"></i>
+                    <div class="fw-bold fs-4 mt-1">{{ stats.active_allocations }}</div>
+                    <small class="text-muted">Active Allocations</small>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

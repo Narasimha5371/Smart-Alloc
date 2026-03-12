@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}My Skills - Smart-Alloc{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="mb-0" style="color: var(--sa-navy);">
+            <i class="bi bi-tools me-2" style="color: var(--sa-teal);"></i>My Skills
+        </h2>
+    </div>
+
+    <!-- Current Skills -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0" style="color: var(--sa-navy);">
+                <i class="bi bi-star-fill me-2" style="color: var(--sa-teal);"></i>Current Skills
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if user_skill_map %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Skill Name</th>
+                            <th>Proficiency</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill_id, us in user_skill_map.items() %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-gear-fill me-1" style="color: var(--sa-teal);"></i>
+                                {{ us.skill.name }}
+                            </td>
+                            <td>
+                                <span class="me-2">
+                                    {% for i in range(1, 6) %}
+                                        {% if i <= us.proficiency_level %}
+                                        <i class="bi bi-star-fill" style="color: #f4c542;"></i>
+                                        {% else %}
+                                        <i class="bi bi-star" style="color: #ddd;"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <small class="text-muted">({{ us.proficiency_level }}/5)</small>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex align-items-center gap-2">
+                                    <!-- Update Proficiency -->
+                                    <form action="/employee/skills/{{ us.id }}/update" method="post" class="d-inline-flex align-items-center gap-1">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                        <select name="proficiency_level" class="form-select form-select-sm" style="width: auto;">
+                                            {% for lvl in range(1, 6) %}
+                                            <option value="{{ lvl }}" {% if lvl == us.proficiency_level %}selected{% endif %}>{{ lvl }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-teal btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </form>
+                                    <!-- Remove -->
+                                    <form action="/employee/skills/{{ us.id }}/remove" method="post" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                onclick="return confirm('Remove this skill?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-3 mb-0">You haven't added any skills yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Add Skill Section -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0" style="color: var(--sa-navy);">
+                <i class="bi bi-plus-circle-fill me-2" style="color: var(--sa-teal);"></i>Add Skill
+            </h5>
+        </div>
+        <div class="card-body">
+            <form action="/employee/skills/add" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="skill_id" class="form-label fw-semibold">Existing Skill</label>
+                        <select name="skill_id" id="skill_id" class="form-select">
+                            <option value="" selected>Select a skill...</option>
+                            {% for s in all_skills %}
+                                {% if s.id not in user_skill_ids %}
+                                <option value="{{ s.id }}">{{ s.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="new_skill_name" class="form-label fw-semibold">Or New Skill</label>
+                        <input type="text" name="new_skill_name" id="new_skill_name" class="form-control"
+                               placeholder="Enter skill name">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="proficiency_level" class="form-label fw-semibold">Proficiency</label>
+                        <select name="proficiency_level" id="proficiency_level" class="form-select" required>
+                            <option value="1">1 – Beginner</option>
+                            <option value="2">2 – Basic</option>
+                            <option value="3" selected>3 – Intermediate</option>
+                            <option value="4">4 – Advanced</option>
+                            <option value="5">5 – Expert</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-teal w-100">
+                            <i class="bi bi-plus-lg me-1"></i>Add Skill
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

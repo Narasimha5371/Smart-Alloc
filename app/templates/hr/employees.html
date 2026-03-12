@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Employee Management — Smart-Alloc{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Page Heading -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h2 class="mb-0" style="color: var(--sa-navy);">
+            <i class="bi bi-person-badge me-2" style="color: var(--sa-teal);"></i>Employee Management
+        </h2>
+        <a href="/hr/dashboard" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Import Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0" style="color: var(--sa-navy);">
+                <i class="bi bi-upload me-2" style="color: var(--sa-teal);"></i>Import from Spreadsheet
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="/hr/employees/upload" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <div class="row align-items-end g-3">
+                    <div class="col-md-8">
+                        <label for="file" class="form-label fw-semibold">Select File</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx,.csv" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-teal w-100">
+                            <i class="bi bi-cloud-upload me-1"></i>Upload &amp; Import
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="alert alert-light border mt-3 mb-0">
+                <i class="bi bi-info-circle me-1" style="color: var(--sa-teal);"></i>
+                <strong>Required columns:</strong> <code>email</code>, <code>full_name</code>.
+                <strong class="ms-2">Optional:</strong> <code>department</code>, <code>password</code>, <code>skills</code> (comma-separated).
+            </div>
+        </div>
+    </div>
+
+    <!-- Employees Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0" style="color: var(--sa-navy);">
+                <i class="bi bi-people me-2" style="color: var(--sa-teal);"></i>Employees
+                <span class="badge bg-secondary ms-2">{{ employees|length }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background-color: var(--sa-navy); color: #fff;">
+                        <tr>
+                            <th class="ps-3">Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Skills</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for emp in employees %}
+                        <tr>
+                            <td class="ps-3 fw-semibold">{{ emp.full_name }}</td>
+                            <td><small class="text-muted">{{ emp.email }}</small></td>
+                            <td>{{ emp.department or '—' }}</td>
+                            <td>
+                                {% if emp.skills %}
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for s in emp.skills %}
+                                            <span class="badge bg-dark bg-opacity-10 text-dark border" title="Proficiency: {{ s.proficiency_level }}">
+                                                {{ s.skill.name }}
+                                                <small class="text-muted">({{ s.proficiency_level }})</small>
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted small">No skills listed</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if emp.is_active %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <i class="bi bi-check-circle me-1"></i>Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                        <i class="bi bi-x-circle me-1"></i>Inactive
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>No employees found. Use the import tool above to add employees.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

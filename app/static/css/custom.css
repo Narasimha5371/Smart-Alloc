@@ -1,0 +1,377 @@
+/* Smart-Alloc Custom Styles */
+
+:root {
+    --navy: #1a1a2e;
+    --navy-light: #16213e;
+    --teal: #16a085;
+    --teal-hover: #1abc9c;
+    --teal-dark: #0e806a;
+}
+
+/* Global */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Navbar */
+.navbar-dark-custom {
+    background-color: var(--navy) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Teal buttons */
+.btn-teal {
+    background-color: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+}
+
+.btn-teal:hover,
+.btn-teal:focus {
+    background-color: var(--teal-hover);
+    border-color: var(--teal-hover);
+    color: #fff;
+}
+
+.btn-teal:active {
+    background-color: var(--teal-dark);
+    border-color: var(--teal-dark);
+    color: #fff;
+}
+
+.btn-outline-teal {
+    border-color: var(--teal);
+    color: var(--teal);
+}
+
+.btn-outline-teal:hover {
+    background-color: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header-navy {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: #fff;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+}
+
+/* Stat cards */
+.stat-card {
+    border-left: 4px solid var(--teal);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card .stat-icon {
+    font-size: 2.5rem;
+    color: var(--teal);
+    opacity: 0.7;
+}
+
+/* Status badges */
+.badge-pending {
+    background-color: #f39c12;
+    color: #fff;
+}
+
+.badge-ai-reviewed {
+    background-color: #8e44ad;
+    color: #fff;
+}
+
+.badge-accepted {
+    background-color: #27ae60;
+    color: #fff;
+}
+
+.badge-rejected {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.badge-in-progress {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.badge-completed {
+    background-color: #2c3e50;
+    color: #fff;
+}
+
+.badge-allocated {
+    background-color: #16a085;
+    color: #fff;
+}
+
+.badge-suggested {
+    background-color: #9b59b6;
+    color: #fff;
+}
+
+/* Role badges */
+.badge-admin {
+    background-color: #e74c3c;
+}
+
+.badge-hr {
+    background-color: #f39c12;
+}
+
+.badge-manager {
+    background-color: #3498db;
+}
+
+.badge-employee {
+    background-color: #27ae60;
+}
+
+.badge-client {
+    background-color: #9b59b6;
+}
+
+/* Priority badges */
+.badge-low {
+    background-color: #95a5a6;
+}
+
+.badge-medium {
+    background-color: #f39c12;
+}
+
+.badge-high {
+    background-color: #e67e22;
+}
+
+.badge-critical {
+    background-color: #e74c3c;
+}
+
+/* Progress bars */
+.progress {
+    border-radius: 10px;
+    height: 10px;
+    background-color: #e9ecef;
+}
+
+.progress-bar-teal {
+    background-color: var(--teal);
+}
+
+/* Tables */
+.table-custom {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-custom thead {
+    background-color: var(--navy);
+    color: #fff;
+}
+
+.table-custom thead th {
+    border: none;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-custom tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table-custom tbody tr:hover {
+    background-color: rgba(22, 160, 133, 0.05);
+}
+
+/* Auth pages */
+.auth-card {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.auth-card .card-header {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 50%, var(--teal-dark) 100%);
+    color: #fff;
+    padding: 5rem 0;
+    margin-top: -1.5rem;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* Feature cards on landing */
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 16px;
+}
+
+.feature-card .feature-icon {
+    font-size: 3rem;
+    color: var(--teal);
+    margin-bottom: 1rem;
+}
+
+/* Footer */
+.footer-custom {
+    background-color: var(--navy);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 1.5rem 0;
+    font-size: 0.875rem;
+}
+
+/* Notification badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.45rem;
+}
+
+/* Skill badge */
+.skill-badge {
+    background-color: rgba(22, 160, 133, 0.1);
+    color: var(--teal);
+    border: 1px solid rgba(22, 160, 133, 0.3);
+    font-weight: 500;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h5 {
+        font-size: 1.15rem;
+    }
+
+    .card-header-navy {
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    
+    .card-body {
+        padding: 0.875rem !important;
+    }
+}
+
+/* Form inputs */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 0.2rem rgba(22, 160, 133, 0.25);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+    animation: fadeIn 0.3s ease forwards;
+}

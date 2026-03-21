@@ -116,9 +116,13 @@ def create_user(
 @router.post("/users/{user_id}/toggle")
 def toggle_user(
     user_id: int,
+    csrf_token: str = Form(...),
     user: User = Depends(admin_only),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/admin/dashboard", status_code=302)
+
     target = user_service.get_user_by_id(db, user_id)
     if target and target.id != user.id:
         user_service.update_user(db, user_id, is_active=not target.is_active)
@@ -128,9 +132,13 @@ def toggle_user(
 @router.post("/users/{user_id}/delete")
 def delete_user(
     user_id: int,
+    csrf_token: str = Form(...),
     user: User = Depends(admin_only),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/admin/dashboard", status_code=302)
+
     if user_id != user.id:
         user_service.delete_user(db, user_id)
     return RedirectResponse(url="/admin/dashboard", status_code=302)
@@ -140,9 +148,13 @@ def delete_user(
 def update_user_role(
     user_id: int,
     role: str = Form(...),
+    csrf_token: str = Form(...),
     user: User = Depends(admin_only),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/admin/dashboard", status_code=302)
+
     try:
         user_role = UserRole(role)
         user_service.update_user(db, user_id, role=user_role)

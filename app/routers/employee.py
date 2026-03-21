@@ -119,9 +119,13 @@ def add_skill(
 def update_skill_proficiency(
     user_skill_id: int,
     proficiency_level: int = Form(...),
+    csrf_token: str = Form(...),
     user: User = Depends(employee_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/employee/skills", status_code=302)
+
     us = db.query(UserSkill).filter(
         UserSkill.id == user_skill_id, UserSkill.user_id == user.id
     ).first()
@@ -134,9 +138,13 @@ def update_skill_proficiency(
 @router.post("/skills/{user_skill_id}/remove")
 def remove_skill(
     user_skill_id: int,
+    csrf_token: str = Form(...),
     user: User = Depends(employee_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/employee/skills", status_code=302)
+
     us = db.query(UserSkill).filter(
         UserSkill.id == user_skill_id, UserSkill.user_id == user.id
     ).first()
@@ -157,23 +165,32 @@ def notifications_page(
         "request": request,
         "user": user,
         "notifications": notifications,
+        "csrf_token": generate_csrf_token(),
     })
 
 
 @router.post("/notifications/{notification_id}/read")
 def mark_read(
     notification_id: int,
+    csrf_token: str = Form(...),
     user: User = Depends(employee_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/employee/notifications", status_code=302)
+
     notification_service.mark_as_read(db, notification_id, user.id)
     return RedirectResponse(url="/employee/notifications", status_code=302)
 
 
 @router.post("/notifications/read-all")
 def mark_all_read(
+    csrf_token: str = Form(...),
     user: User = Depends(employee_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/employee/notifications", status_code=302)
+
     notification_service.mark_all_as_read(db, user.id)
     return RedirectResponse(url="/employee/notifications", status_code=302)

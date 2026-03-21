@@ -74,9 +74,13 @@ def project_review(
 def trigger_ai_review(
     project_id: int,
     request: Request,
+    csrf_token: str = Form(...),
     user: User = Depends(hr_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url=f"/hr/project/{project_id}", status_code=302)
+
     project = project_service.get_project_by_id(db, project_id)
     if not project:
         return RedirectResponse(url="/hr/dashboard", status_code=302)

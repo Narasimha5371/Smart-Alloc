@@ -67,9 +67,13 @@ def project_detail(
 @router.post("/project/{project_id}/ai-suggest")
 def trigger_ai_suggestions(
     project_id: int,
+    csrf_token: str = Form(...),
     user: User = Depends(manager_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url=f"/manager/project/{project_id}", status_code=302)
+
     project = project_service.get_project_by_id(db, project_id)
     if not project:
         return RedirectResponse(url="/manager/dashboard", status_code=302)
@@ -162,9 +166,13 @@ def allocate_employee(
 @router.post("/allocation/{allocation_id}/remove")
 def remove_allocation(
     allocation_id: int,
+    csrf_token: str = Form(...),
     user: User = Depends(manager_access),
     db: Session = Depends(get_db),
 ):
+    if not validate_csrf_token(csrf_token):
+        return RedirectResponse(url="/manager/dashboard", status_code=302)
+
     allocation = allocation_service.get_allocation_by_id(db, allocation_id)
     if allocation:
         project_id = allocation.project_id

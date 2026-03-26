@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Form, HTTPException, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user_for_pages
 from app.services.auth_service import authenticate_user, register_user, create_token_for_user
@@ -9,6 +10,7 @@ from app.utils.security import generate_csrf_token, validate_csrf_token
 
 router = APIRouter(tags=["auth"])
 templates = Jinja2Templates(directory="app/templates")
+# Keep templates available for other usages; prefer `render_template` helper
 
 
 @router.get("/login", response_class=HTMLResponse)
@@ -17,8 +19,7 @@ def login_page(request: Request, db: Session = Depends(get_db)):
     if user:
         return RedirectResponse(url="/dashboard", status_code=302)
     csrf_token = generate_csrf_token()
-    return templates.TemplateResponse("auth/login.html", {
-        "request": request,
+    return render_template(request, "auth/login.html", {
         "csrf_token": csrf_token,
     })
 
@@ -32,16 +33,14 @@ def login(
     db: Session = Depends(get_db),
 ):
     if not validate_csrf_token(csrf_token):
-        return templates.TemplateResponse("auth/login.html", {
-            "request": request,
+        return render_template(request, "auth/login.html", {
             "error": "Invalid session. Please try again.",
             "csrf_token": generate_csrf_token(),
         }, status_code=400)
 
     user = authenticate_user(db, email, password)
     if not user:
-        return templates.TemplateResponse("auth/login.html", {
-            "request": request,
+        return render_template(request, "auth/login.html", {
             "error": "Invalid email or password",
             "csrf_token": generate_csrf_token(),
         }, status_code=401)
@@ -64,8 +63,7 @@ def register_page(request: Request, db: Session = Depends(get_db)):
     if user:
         return RedirectResponse(url="/dashboard", status_code=302)
     csrf_token = generate_csrf_token()
-    return templates.TemplateResponse("auth/register.html", {
-        "request": request,
+    return render_template(request, "auth/register.html", {
         "csrf_token": csrf_token,
         "roles": [UserRole.CLIENT],  # Only client self-registration
     })
@@ -82,24 +80,21 @@ def register(
     db: Session = Depends(get_db),
 ):
     if not validate_csrf_token(csrf_token):
-        return templates.TemplateResponse("auth/register.html", {
-            "request": request,
+        return render_template(request, "auth/register.html", {
             "error": "Invalid session. Please try again.",
             "csrf_token": generate_csrf_token(),
             "roles": [UserRole.CLIENT],
         }, status_code=400)
 
     if password != confirm_password:
-        return templates.TemplateResponse("auth/register.html", {
-            "request": request,
+        return render_template(request, "auth/register.html", {
             "error": "Passwords do not match",
             "csrf_token": generate_csrf_token(),
             "roles": [UserRole.CLIENT],
         }, status_code=400)
 
     if len(password) < 6:
-        return templates.TemplateResponse("auth/register.html", {
-            "request": request,
+        return render_template(request, "auth/register.html", {
             "error": "Password must be at least 6 characters",
             "csrf_token": generate_csrf_token(),
             "roles": [UserRole.CLIENT],
@@ -108,8 +103,7 @@ def register(
     try:
         user = register_user(db, email, full_name, password, role=UserRole.CLIENT)
     except ValueError as e:
-        return templates.TemplateResponse("auth/register.html", {
-            "request": request,
+        return render_template(request, "auth/register.html", {
             "error": str(e),
             "csrf_token": generate_csrf_token(),
             "roles": [UserRole.CLIENT],

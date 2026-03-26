@@ -2,6 +2,7 @@ import json
 from fastapi import APIRouter, Depends, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, RoleChecker
 from app.models.enums import UserRole, ProjectStatus, AllocationStatus
@@ -17,6 +18,7 @@ from app.utils.security import generate_csrf_token, validate_csrf_token
 
 router = APIRouter(prefix="/manager", tags=["manager"])
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering
 
 manager_access = RoleChecker(allowed_roles=[UserRole.MANAGER, UserRole.ADMIN])
 
@@ -28,8 +30,7 @@ def manager_dashboard(
     db: Session = Depends(get_db),
 ):
     projects = project_service.get_accepted_projects(db)
-    return templates.TemplateResponse("manager/dashboard.html", {
-        "request": request,
+    return render_template(request, "manager/dashboard.html", {
         "user": user,
         "projects": projects,
         "csrf_token": generate_csrf_token(),
@@ -53,8 +54,7 @@ def project_detail(
 
     employees = user_service.get_employees_with_skills(db)
 
-    return templates.TemplateResponse("manager/allocate.html", {
-        "request": request,
+    return render_template(request, "manager/allocate.html", {
         "user": user,
         "project": project,
         "ai_suggestions": ai_suggestions,
@@ -199,8 +199,7 @@ def progress_overview(
             "avg_progress": round(avg_progress),
         })
 
-    return templates.TemplateResponse("manager/progress.html", {
-        "request": request,
+    return render_template(request, "manager/progress.html", {
         "user": user,
         "project_data": project_data,
     })

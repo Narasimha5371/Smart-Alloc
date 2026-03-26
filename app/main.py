@@ -1,7 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+import logging
+import uuid
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from app.config import get_settings
 from app.database import engine, Base
 
@@ -12,6 +15,12 @@ from app.models import (  # noqa: F401
 )
 
 settings = get_settings()
+
+# Configure basic logging so unhandled exceptions are recorded
+logging.basicConfig(
+    level=logging.DEBUG if settings.DEBUG else logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -25,6 +34,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Templates
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering in handlers
 
 # Create tables on startup
 @app.on_event("startup")
@@ -47,20 +57,17 @@ app.include_router(client.router)
 # --- Error Handlers ---
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc):
-    return templates.TemplateResponse("errors/404.html", {
-        "request": request,
-    }, status_code=404)
+    return render_template(request, "errors/404.html", status_code=404)
 
 
 @app.exception_handler(403)
 async def forbidden_handler(request: Request, exc):
-    return templates.TemplateResponse("errors/403.html", {
-        "request": request,
-    }, status_code=403)
+    return render_template(request, "errors/403.html", status_code=403)
 
 
 @app.exception_handler(500)
 async def server_error_handler(request: Request, exc):
-    return templates.TemplateResponse("errors/500.html", {
-        "request": request,
-    }, status_code=500)
+    # Log full traceback for diagnostics and attach a short correlation id
+    correlation_id = uuid.uuid4().hex[:8]
+    logging.exception("Unhandled exception (cid=%s) while handling request %s", correlation_id, request.url)
+    return render_template(request, "errors/500.html", {"correlation_id": correlation_id}, status_code=500)

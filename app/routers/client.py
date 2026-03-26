@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, RoleChecker
 from app.models.enums import UserRole, ProjectStatus, Priority
@@ -12,6 +13,7 @@ from app.utils.security import generate_csrf_token, validate_csrf_token
 
 router = APIRouter(prefix="/client", tags=["client"])
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering
 
 client_access = RoleChecker(allowed_roles=[UserRole.CLIENT, UserRole.ADMIN])
 
@@ -25,8 +27,7 @@ def client_dashboard(
     projects = project_service.get_projects(db, client_id=user.id)
     unread_count = notification_service.get_unread_count(db, user.id)
 
-    return templates.TemplateResponse("client/dashboard.html", {
-        "request": request,
+    return render_template(request, "client/dashboard.html", {
         "user": user,
         "projects": projects,
         "unread_count": unread_count,
@@ -40,8 +41,7 @@ def submit_project_page(
     db: Session = Depends(get_db),
 ):
     skills = db.query(Skill).order_by(Skill.name).all()
-    return templates.TemplateResponse("client/submit_project.html", {
-        "request": request,
+    return render_template(request, "client/submit_project.html", {
         "user": user,
         "skills": skills,
         "csrf_token": generate_csrf_token(),
@@ -107,8 +107,7 @@ def view_project(
     if not project or project.client_id != user.id:
         return RedirectResponse(url="/client/dashboard", status_code=302)
 
-    return templates.TemplateResponse("client/project_detail.html", {
-        "request": request,
+    return render_template(request, "client/project_detail.html", {
         "user": user,
         "project": project,
     })

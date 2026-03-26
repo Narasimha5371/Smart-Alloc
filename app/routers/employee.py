@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, RoleChecker
 from app.models.enums import UserRole
@@ -11,6 +12,7 @@ from app.utils.security import generate_csrf_token, validate_csrf_token
 
 router = APIRouter(prefix="/employee", tags=["employee"])
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering
 
 employee_access = RoleChecker(allowed_roles=[UserRole.EMPLOYEE, UserRole.ADMIN])
 
@@ -25,8 +27,7 @@ def employee_dashboard(
     notifications = notification_service.get_notifications_for_user(db, user.id, unread_only=True)
     unread_count = notification_service.get_unread_count(db, user.id)
 
-    return templates.TemplateResponse("employee/dashboard.html", {
-        "request": request,
+    return render_template(request, "employee/dashboard.html", {
         "user": user,
         "allocations": allocations,
         "notifications": notifications,
@@ -65,8 +66,7 @@ def skills_page(
     user_skill_ids = {us.skill_id for us in user_skills}
     user_skill_map = {us.skill_id: us for us in user_skills}
 
-    return templates.TemplateResponse("employee/skills.html", {
-        "request": request,
+    return render_template(request, "employee/skills.html", {
         "user": user,
         "all_skills": all_skills,
         "user_skill_ids": user_skill_ids,
@@ -161,8 +161,7 @@ def notifications_page(
     db: Session = Depends(get_db),
 ):
     notifications = notification_service.get_notifications_for_user(db, user.id)
-    return templates.TemplateResponse("employee/notifications.html", {
-        "request": request,
+    return render_template(request, "employee/notifications.html", {
         "user": user,
         "notifications": notifications,
         "csrf_token": generate_csrf_token(),

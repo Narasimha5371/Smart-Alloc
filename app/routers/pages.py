@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user_for_pages
 from app.models.enums import UserRole
@@ -8,6 +9,7 @@ from app.services import notification_service
 
 router = APIRouter(tags=["pages"])
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -15,7 +17,7 @@ def landing_page(request: Request, db: Session = Depends(get_db)):
     user = get_current_user_for_pages(request, db)
     if user:
         return RedirectResponse(url="/dashboard", status_code=302)
-    return templates.TemplateResponse("landing.html", {"request": request})
+    return render_template(request, "landing.html")
 
 
 @router.get("/dashboard")

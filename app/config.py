@@ -23,11 +23,14 @@ class Settings(BaseSettings):
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
-        if self.DATABASE_URL.startswith("postgresql"):
+        # If DATABASE_URL is explicitly set, use it (this handles both SQLite and PostgreSQL)
+        if self.DATABASE_URL:
             return self.DATABASE_URL
-        if self.POSTGRES_SERVER and self.POSTGRES_DB:
+        # If we have PostgreSQL settings, construct the URL
+        if self.POSTGRES_SERVER and self.POSTGRES_DB and self.POSTGRES_USER:
             return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-        return self.DATABASE_URL
+        # Default fallback to SQLite
+        return "sqlite:///./smart_alloc.db"
 
     # Groq AI
     GROQ_API_KEY: str = ""

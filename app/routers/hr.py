@@ -2,6 +2,7 @@ import json
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, RoleChecker
 from app.models.enums import UserRole, ProjectStatus
@@ -18,6 +19,7 @@ from app.utils.security import generate_csrf_token, validate_csrf_token
 
 router = APIRouter(prefix="/hr", tags=["hr"])
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering
 
 hr_access = RoleChecker(allowed_roles=[UserRole.HR, UserRole.ADMIN])
 
@@ -32,8 +34,7 @@ def hr_dashboard(
     reviewed_projects = project_service.get_projects(db, status=ProjectStatus.AI_REVIEWED)
     all_projects = project_service.get_projects(db)
     employees = user_service.get_employees(db)
-    return templates.TemplateResponse("hr/dashboard.html", {
-        "request": request,
+    return render_template(request, "hr/dashboard.html", {
         "user": user,
         "pending_projects": pending_projects,
         "reviewed_projects": reviewed_projects,
@@ -61,8 +62,7 @@ def project_review(
         except json.JSONDecodeError:
             ai_data = {"reasoning": project.ai_recommendation}
 
-    return templates.TemplateResponse("hr/project_review.html", {
-        "request": request,
+    return render_template(request, "hr/project_review.html", {
         "user": user,
         "project": project,
         "ai_data": ai_data,
@@ -152,8 +152,7 @@ def employees_page(
     db: Session = Depends(get_db),
 ):
     employees = user_service.get_employees_with_skills(db)
-    return templates.TemplateResponse("hr/employees.html", {
-        "request": request,
+    return render_template(request, "hr/employees.html", {
         "user": user,
         "employees": employees,
         "csrf_token": generate_csrf_token(),
@@ -174,8 +173,7 @@ def upload_employees(
     content = file.file.read()
     result = import_service.process_upload(db, file.filename or "", content)
 
-    return templates.TemplateResponse("hr/upload_result.html", {
-        "request": request,
+    return render_template(request, "hr/upload_result.html", {
         "user": user,
         "result": result,
     })

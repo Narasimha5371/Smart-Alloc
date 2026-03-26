@@ -99,9 +99,9 @@
                                 {% elif project.priority %}
                                 <span class="badge bg-secondary">Low</span>
                                 {% endif %}
-                                {% if project.ai_confidence is not none %}
+                                {% if project.ai_confidence_score is not none %}
                                 <span class="badge bg-dark" title="AI Confidence">
-                                    <i class="bi bi-stars me-1"></i>{{ (project.ai_confidence * 100)|round|int }}%
+                                    <i class="bi bi-stars me-1"></i>{{ (project.ai_confidence_score * 100)|round|int }}%
                                 </span>
                                 {% endif %}
                             </div>

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.utils.template_renderer import render_template
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, require_login, RoleChecker
 from app.models.enums import UserRole, ProjectStatus, AllocationStatus
@@ -10,6 +11,7 @@ from app.utils.security import generate_csrf_token, validate_csrf_token, get_pas
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 templates = Jinja2Templates(directory="app/templates")
+# Prefer `render_template` helper for safe rendering
 
 admin_only = RoleChecker(allowed_roles=[UserRole.ADMIN])
 
@@ -29,8 +31,7 @@ def admin_dashboard(
         "active_allocations": allocation_service.get_active_allocation_count(db),
     }
     users = user_service.get_all_users(db)
-    return templates.TemplateResponse("admin/dashboard.html", {
-        "request": request,
+    return render_template(request, "admin/dashboard.html", {
         "user": user,
         "stats": stats,
         "users": users,
@@ -53,8 +54,7 @@ def admin_users(
         except ValueError:
             pass  # Ignore invalid role filters
 
-    return templates.TemplateResponse("admin/users.html", {
-        "request": request,
+    return render_template(request, "admin/users.html", {
         "user": user,
         "users": users,
         "current_role_filter": role,
@@ -78,8 +78,7 @@ def admin_projects(
     else:
         projects = project_service.get_projects(db)
 
-    return templates.TemplateResponse("admin/projects.html", {
-        "request": request,
+    return render_template(request, "admin/projects.html", {
         "user": user,
         "projects": projects,
         "current_status_filter": status,
